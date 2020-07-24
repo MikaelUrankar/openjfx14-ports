@@ -2,7 +2,7 @@
 
 PORTNAME=	openjfx
 DISTVERSION=	14.0.2.1+1
-CATEGORIES=	java x11-toolkits devel
+CATEGORIES=	x11-toolkits java devel
 PKGNAMESUFFIX=	14
 
 MAINTAINER=	mikael@FreeBSD.org
