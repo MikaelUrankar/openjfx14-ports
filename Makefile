@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	openjfx
-DISTVERSION=    14.0.2.1+1
+DISTVERSION=	14.0.2.1+1
 CATEGORIES=	java x11-toolkits devel
 PKGNAMESUFFIX=	14
 
@@ -42,7 +42,7 @@ PLIST_SUB=	JAVA_HOME=${JAVA_HOME}
 OPTIONS_DEFINE=	MEDIA SWT TEST WEBKIT
 OPTIONS_EXCLUDE_aarch64=	WEBKIT
 OPTIONS_EXCLUDE_powerpc64=	WEBKIT
-OPTIONS_DEFAULT= MEDIA WEBKIT
+OPTIONS_DEFAULT=	MEDIA WEBKIT
 OPTIONS_SUB=	yes
 
 MEDIA_DESC=	Media module
@@ -125,7 +125,7 @@ do-configure:
 	@${ECHO_CMD} "BSD.compileSWT = ${COMPILE_SWT:Ufalse};" >> ${WRKSRC}/buildSrc/bsd.gradle
 
 do-build:
-	@cd ${WRKSRC} && env ${_GRADLE_RUN} zips
+	@cd ${WRKSRC} && ${SETENV} ${_GRADLE_RUN} zips
 
 do-install:
 	@${MKDIR} ${STAGEDIR}${JAVA_HOME}/lib ${STAGEDIR}${JAVA_HOME}/jmods
