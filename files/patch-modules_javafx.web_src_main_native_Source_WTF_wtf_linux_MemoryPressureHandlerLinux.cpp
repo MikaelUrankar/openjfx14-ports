@@ -1,6 +1,11 @@
---- modules/javafx.web/src/main/native/Source/WTF/wtf/linux/MemoryPressureHandlerLinux.cpp.orig	2020-07-17 10:21:33 UTC
+--- modules/javafx.web/src/main/native/Source/WTF/wtf/linux/MemoryPressureHandlerLinux.cpp.orig	2020-07-17 12:21:33 UTC
 +++ modules/javafx.web/src/main/native/Source/WTF/wtf/linux/MemoryPressureHandlerLinux.cpp
-@@ -32,9 +32,16 @@
+@@ -28,13 +28,20 @@
+ #include "config.h"
+ #include <wtf/MemoryPressureHandler.h>
+ 
+-#include <malloc.h>
++#include <stdlib.h>
  #include <unistd.h>
  #include <wtf/MainThread.h>
  #include <wtf/MemoryFootprint.h>

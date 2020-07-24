@@ -31,7 +31,7 @@
 +#include "config.h"
 +#include <wtf/MemoryPressureHandler.h>
 +
-+#include <malloc.h>
++#include <stdlib.h>
 +#include <unistd.h>
 +#include <wtf/MainThread.h>
 +#include <wtf/MemoryFootprint.h>
