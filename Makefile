@@ -1,10 +1,5 @@
 # $FreeBSD$
 
-# XXX
-# requires apache-ant 1.10.8 : https://bz.apache.org/bugzilla/show_bug.cgi?id=63874 (pr 248098 in FreeBSD bz)
-# test swt, sndio
-
-
 PORTNAME=	openjfx
 DISTVERSION=    14.0.2.1+1
 CATEGORIES=	java x11-toolkits devel
@@ -92,7 +87,6 @@ pre-patch:
 	@${CP} -r ${WRKSRC}/modules/javafx.media/src/main/native/gstreamer/projects/linux \
 		${WRKSRC}/modules/javafx.media/src/main/native/gstreamer/projects/bsd
 
-# s#-Werror##g needed with jfx14 but not jfx8, why?
 post-patch:
 	@${MKDIR} ${WRKDIR}/bin
 	@${PRINTF} '#!/bin/sh\nexec ${CCACHE_BIN} ${CC} ${CFLAGS} ${LDFLAGS} "$$@"\n' > ${WRKDIR}/bin/ccwrapper
