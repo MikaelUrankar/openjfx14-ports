@@ -1,5 +1,22 @@
 # $FreeBSD$
 
+# The following steps are needed for databases/sqldeveloper/scenebuilder:
+# https://wiki.openjdk.java.net/display/OpenJFX/Building+OpenJFX
+# Integration with OpenJDK
+# With the module system in JDK 9 and later, it is not possible to easily overlay
+# an OpenJFX build over an existing JDK as was possible with JDK 8. It is possible
+# to build an OpenJDK that included the updated OpenJFX modules.
+# To create an integrated OpenJDK with OpenJFX requires two builds:
+#     OpenJFX for JDK
+#     OpenJDK, with a configure reference that includes your OpenJFX build.
+# Build OpenJFX first.
+# Configure the JDK with the following addition:
+#      --with-import-modules=_path_to_jfx-dev_/rt/build/modular-sdk
+# Then build the JDK as normal.
+# ie: make -C /usr/ports/java/openjfx14
+# patch java/openjdk1X with --with-import-modules=/usr/ports/java/openjfx14/work/jfx-14.0.2.1-1/build/modular-sdk
+# make -C /usr/ports/java/openjdk1X
+
 PORTNAME=	openjfx
 DISTVERSION=	14.0.2.1+1
 CATEGORIES=	x11-toolkits java devel
@@ -8,6 +25,7 @@ PKGNAMESUFFIX=	14
 MAINTAINER=	mikael@FreeBSD.org
 COMMENT=	JavaFX SDK overlay for OpenJDK 11
 
+# XXX This software is licensed under GPL v2 + Classpath exception
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
@@ -37,7 +55,9 @@ USE_XORG=	x11 xtst xxf86vm
 
 CFLAGS+=	-Wno-unused-command-line-argument
 
-PLIST_SUB=	JAVA_HOME=${JAVA_HOME}
+PLIST_SUB=	INSTALLDIR=${INSTALLDIR}
+
+INSTALLDIR=     ${PREFIX}/${PKGBASE}
 
 OPTIONS_DEFINE=	MEDIA SWT TEST WEBKIT
 OPTIONS_EXCLUDE_aarch64=	WEBKIT
@@ -127,12 +147,15 @@ do-configure:
 do-build:
 	@cd ${WRKSRC} && ${SETENV} ${_GRADLE_RUN} zips
 
+# it's not recommended to install openjfx inside openjdk directory
 do-install:
-	@${MKDIR} ${STAGEDIR}${JAVA_HOME}/lib ${STAGEDIR}${JAVA_HOME}/jmods
-	(cd ${WRKSRC}/build/artifacts/javafx-sdk-14.0.2.1/lib && ${COPYTREE_SHARE} . ${STAGEDIR}${JAVA_HOME}/lib)
-	@${MV} ${STAGEDIR}${JAVA_HOME}/lib/src.zip ${STAGEDIR}${JAVA_HOME}/lib/javafx-src.zip
-	(cd ${WRKSRC}/build/artifacts/javafx-jmods-14.0.2.1 && ${COPYTREE_SHARE} . ${STAGEDIR}${JAVA_HOME}/jmods)
-	@${FIND} ${STAGEDIR}${JAVA_HOME}/lib -name '*.so' -exec ${STRIP_CMD} \{\} \;
+	@${MKDIR} ${STAGEDIR}${INSTALLDIR} \
+		${STAGEDIR}${INSTALLDIR}/lib \
+		${STAGEDIR}${INSTALLDIR}/jmods
+	(cd ${WRKSRC}/build/artifacts/javafx-sdk-14.0.2.1/lib && ${COPYTREE_SHARE} . ${STAGEDIR}${INSTALLDIR}/lib)
+	@${MV} ${STAGEDIR}${INSTALLDIR}/lib/src.zip ${STAGEDIR}${INSTALLDIR}/lib/javafx-src.zip
+	(cd ${WRKSRC}/build/artifacts/javafx-jmods-14.0.2.1 && ${COPYTREE_SHARE} . ${STAGEDIR}${INSTALLDIR}/jmods)
+	@${FIND} ${STAGEDIR}${INSTALLDIR}/lib -name '*.so' -exec ${STRIP_CMD} \{\} \;
 
 do-test-TEST-on:
 	@cd ${WRKSRC} && ${_GRADLE_RUN} check test
