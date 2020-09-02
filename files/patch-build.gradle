@@ -1,4 +1,4 @@
---- build.gradle.orig	2020-07-17 10:21:33 UTC
+--- build.gradle.orig	2020-07-17 12:21:33 UTC
 +++ build.gradle
 @@ -295,6 +295,7 @@ ext.IS_64 = OS_ARCH.toLowerCase().contains("64")
  ext.IS_MAC = OS_NAME.contains("mac") || OS_NAME.contains("darwin")
@@ -268,22 +268,29 @@
                            IS_64 ? "${t.name}-amd64" : "${t.name}-i586"
  
          def webkitOutputDir = cygpath("$buildDir/${t.name}")
-@@ -3436,8 +3428,12 @@ project(":web") {
+@@ -3436,13 +3428,16 @@ project(":web") {
                          environment(WINDOWS_NATIVE_COMPILE_ENVIRONMENT)
                      } else if (t.name == "mac") {
                          cmakeArgs = " $cmakeArgs -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOSX_MIN_VERSION -DCMAKE_OSX_SYSROOT=$MACOSX_SDK_PATH"
 -                    } else if (t.name == "linux") {
 -                        cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=Linux"
+-                        if (IS_64) {
+-                            cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=x86_64"
 +                    } else if (t.name == "linux" || t.name == "bsd") {
 +                        if (t.name == "linux") {
 +                            cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=Linux"
-+                        } else {
-+                            cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=FreeBSD"
-+                        }
-                         if (IS_64) {
-                             cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=x86_64"
                          } else {
-@@ -3479,6 +3475,10 @@ project(":web") {
+-                            cmakeArgs = "$cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=i586"
++                            cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_NAME=FreeBSD"
+                         }
++                        if ( OS_ARCH != "amd64" && OS_ARCH != "i386" ) {
++                            cmakeArgs = "$cmakeArgs -DENABLE_JIT=OFF"
++                        }
++                        cmakeArgs = " $cmakeArgs -DCMAKE_SYSTEM_PROCESSOR=$OS_ARCH"
+                         // TODO: Use cflags and ldflags from all platforms
+                         def cFlags = webkitProperties.ccFlags?.join(' ') ?: ''
+                         def lFlags = webkitProperties.linkFlags?.join(' ') ?: ''
+@@ -3479,6 +3474,10 @@ project(":web") {
                          targetCpuBitDepthSwitch = "--32-bit"
                      }
                      cmakeArgs += " -DJAVAFX_RELEASE_VERSION=${jfxReleaseMajorVersion}"
@@ -294,7 +301,7 @@
                      commandLine("perl", "$projectDir/src/main/native/Tools/Scripts/build-webkit",
                          "--java", "--icu-unicode", targetCpuBitDepthSwitch,
                          "--no-experimental-features", "--cmakeargs=${cmakeArgs}")
-@@ -4928,7 +4928,7 @@ compileTargets { t ->
+@@ -4928,7 +4927,7 @@ compileTargets { t ->
                      // OSX media natives
                      [ "jfxmedia_qtkit", "jfxmedia_avf", "glib-lite" ].each { name ->
                          from ("${mediaProject.buildDir}/native/${t.name}/${mediaBuildType}/${library(name)}") }
@@ -303,7 +310,7 @@
                      from("${mediaProject.buildDir}/native/${t.name}/${mediaBuildType}") { include "libavplugin*.so" }
                  } else from ("${mediaProject.buildDir}/native/${t.name}/${mediaBuildType}/${library("glib-lite")}")
              } else {
-@@ -4941,7 +4941,7 @@ compileTargets { t ->
+@@ -4941,7 +4940,7 @@ compileTargets { t ->
                      // copy libjfxmedia_{avf,qtkit}.dylib if they exist
                      [ "jfxmedia_qtkit", "jfxmedia_avf", "glib-lite" ].each { name ->
                          from ("$MEDIA_STUB/${library(name)}") }
