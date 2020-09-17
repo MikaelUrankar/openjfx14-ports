@@ -19,13 +19,12 @@
 
 PORTNAME=	openjfx
 DISTVERSION=	14.0.2.1+1
-CATEGORIES=	x11-toolkits java devel
+CATEGORIES=	java x11-toolkits devel
 PKGNAMESUFFIX=	14
 
 MAINTAINER=	mikael@FreeBSD.org
 COMMENT=	JavaFX SDK overlay for OpenJDK 11
 
-# XXX This software is licensed under GPL v2 + Classpath exception
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
@@ -82,7 +81,7 @@ TEST_VARS=	AWT_TEST=true FULL_TEST=true
 WEBKIT_IMPLIES=	MEDIA
 WEBKIT_BUILD_DEPENDS=	cmake:devel/cmake
 WEBKIT_LIB_DEPENDS=	libicui18n.so:devel/icu
-WEBKIT_USES=	bison gmake gperf perl5 python:2.7,build
+WEBKIT_USES=	bison gmake gperf perl5 python:3.5+,build
 WEBKIT_USE=	GNOME=libxslt,libxml2 \
 		PERL5=build \
 		RUBY=yes \
