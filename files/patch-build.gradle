@@ -88,24 +88,6 @@
          stubCompile group: "junit", name: "junit", version: "4.8.2"
  
          antlr group: "org.antlr", name: "antlr4", version: "4.7.2", classifier: "complete"
-@@ -2456,7 +2469,7 @@ project(":graphics") {
-             libsDir.mkdirs();
- 
-             def allLibsPresent = true
--            def libNames = [ "antlr4-4.7.2-complete.jar" ]
-+            def libNames = [ "antlr-4.8-complete.jar" ]
-             libNames.each { name ->
-                 File f = new File(libsDir, name)
-                 if (!f.exists()) allLibsPresent = false
-@@ -2467,7 +2480,7 @@ project(":graphics") {
-                 copy {
-                     into libsDir
-                     from f.getParentFile()
--                    include "**/antlr4-4.7.2-complete.jar"
-+                    include "**/antlr-4.8-complete.jar"
-                     includeEmptyDirs = false
-                 }
-             }
 @@ -2602,31 +2615,10 @@ project(":swt") {
      commonModuleSetup(project, [ 'base', 'graphics' ])
  

@@ -13,8 +13,8 @@
 # Configure the JDK with the following addition:
 #      --with-import-modules=_path_to_jfx-dev_/rt/build/modular-sdk
 # Then build the JDK as normal.
-# ie: make -C /usr/ports/java/openjfx14
-# patch java/openjdk1X with --with-import-modules=/usr/ports/java/openjfx14/work/jfx-14.0.2.1-1/build/modular-sdk
+# ie: make -C /usr/ports/java/openjfx14 install
+# patch java/openjdk1X with --with-import-modules=/usr/local/openjfx/javafx-exports.zip
 # make -C /usr/ports/java/openjdk1X
 
 PORTNAME=	openjfx
@@ -169,6 +169,7 @@ do-install:
 	@${MKDIR} ${STAGEDIR}${INSTALLDIR} \
 		${STAGEDIR}${INSTALLDIR}/lib \
 		${STAGEDIR}${INSTALLDIR}/jmods
+	${INSTALL_DATA} ${WRKSRC}/build/javafx-exports.zip ${STAGEDIR}${INSTALLDIR}
 	(cd ${WRKSRC}/build/artifacts/javafx-sdk-14.0.2.1/lib && ${COPYTREE_SHARE} . ${STAGEDIR}${INSTALLDIR}/lib)
 	@${MV} ${STAGEDIR}${INSTALLDIR}/lib/src.zip ${STAGEDIR}${INSTALLDIR}/lib/javafx-src.zip
 	(cd ${WRKSRC}/build/artifacts/javafx-jmods-14.0.2.1 && ${COPYTREE_SHARE} . ${STAGEDIR}${INSTALLDIR}/jmods)

@@ -1,3 +1,4 @@
+%%INSTALLDIR%%/javafx-exports.zip
 %%INSTALLDIR%%/jmods/javafx.base.jmod
 %%INSTALLDIR%%/jmods/javafx.controls.jmod
 %%INSTALLDIR%%/jmods/javafx.fxml.jmod
