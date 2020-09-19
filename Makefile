@@ -22,6 +22,19 @@ DISTVERSION=	14.0.2.1+1
 CATEGORIES=	java x11-toolkits devel
 PKGNAMESUFFIX=	14
 
+MASTER_SITES=	https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/7.7.1/:core \
+		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-grouping/7.7.1/:grouping \
+		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queries/7.7.1/:queries \
+		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queryparser/7.7.1/:queryparser \
+		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-sandbox/7.7.1/:sandbox \
+		https://repo1.maven.org/maven2/org/antlr/antlr4/4.7.2/:antlr
+DISTFILES=	lucene-core-7.7.1.jar:core \
+		lucene-grouping-7.7.1.jar:grouping \
+		lucene-queries-7.7.1.jar:queries \
+		lucene-queryparser-7.7.1.jar:queryparser \
+		lucene-sandbox-7.7.1.jar:sandbox \
+		antlr4-4.7.2-complete.jar:antlr
+
 MAINTAINER=	mikael@FreeBSD.org
 COMMENT=	JavaFX SDK overlay for OpenJDK 11
 
@@ -32,7 +45,6 @@ ONLY_FOR_ARCHS=	aarch64 amd64 powerpc64
 
 BUILD_DEPENDS=	zip:archivers/zip \
 		apache-ant>0:devel/apache-ant \
-		antlr4>0:devel/antlr4 \
 		gradle62>=6.2:devel/gradle62 \
 		${JAVALIBDIR}/junit.jar:java/junit
 LIB_DEPENDS=	libasound.so:audio/alsa-lib \
@@ -95,6 +107,13 @@ _GRADLE_ENV=	CC=${WRKDIR}/bin/ccwrapper \
 		JAVA_VERSION=${JAVA_VERSION}
 _GRADLE_RUN=	${SETENV} ${_GRADLE_ENV} gradle62 --no-daemon
 
+post-extract:
+	${MKDIR} ${WRKDIR}/jars
+.for f in core grouping queries queryparser sandbox
+	${CP} ${DISTDIR}/lucene-${f}-7.7.1.jar ${WRKDIR}/jars
+.endfor
+	${CP} ${DISTDIR}/antlr4-4.7.2-complete.jar ${WRKDIR}/jars
+
 # The BSD Makefiles for GStreamer-lite and Jfxmedia are based on the
 # Linux versions.  Prepare the tree, so that we only see the changes
 # from Linux's Makefile in our own patches.
@@ -136,13 +155,14 @@ post-patch:
 do-configure:
 	@${MKDIR} ${WRKDIR}/gradle-home
 	@${ECHO_CMD} "NUM_COMPILE_THREADS = ${MAKE_JOBS_NUMBER}" > ${WRKSRC}/gradle.properties
+	@${ECHO_CMD} "JFX_DEPS_URL = ${WRKDIR}/jars" > ${WRKSRC}/gradle.properties
 .for prop in COMPILE_MEDIA COMPILE_WEBKIT AWT_TEST FULL_TEST
 	@${ECHO_CMD} "${prop} = ${${prop}:Ufalse}" >> ${WRKSRC}/gradle.properties
 .endfor
 	@${ECHO_CMD} "BSD.compileSWT = ${COMPILE_SWT:Ufalse};" >> ${WRKSRC}/buildSrc/bsd.gradle
 
 do-build:
-	@cd ${WRKSRC} && ${SETENV} ${_GRADLE_RUN} zips
+	@cd ${WRKSRC} && ${SETENV} ${_GRADLE_RUN} zips --exclude-task javadoc
 
 # it's not recommended to install openjfx inside openjdk directory
 do-install:
