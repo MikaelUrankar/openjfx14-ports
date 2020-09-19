@@ -161,6 +161,8 @@ do-configure:
 .endfor
 	@${ECHO_CMD} "BSD.compileSWT = ${COMPILE_SWT:Ufalse};" >> ${WRKSRC}/buildSrc/bsd.gradle
 
+# the java doc are not installed on FreeBSD so exclude the javadoc task
+# as it'll fail otherwise
 do-build:
 	@cd ${WRKSRC} && ${SETENV} ${_GRADLE_RUN} zips --exclude-task javadoc
 
