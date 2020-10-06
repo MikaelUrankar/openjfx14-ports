@@ -14,7 +14,7 @@
 #      --with-import-modules=_path_to_jfx-dev_/rt/build/modular-sdk
 # Then build the JDK as normal.
 # ie: make -C /usr/ports/java/openjfx14 install
-# patch java/openjdk1X with --with-import-modules=/usr/local/openjfx/javafx-exports.zip
+# patch java/openjdk1X with --with-import-modules=/usr/local/openjfx14/javafx-exports.zip
 # make -C /usr/ports/java/openjdk1X
 
 PORTNAME=	openjfx
