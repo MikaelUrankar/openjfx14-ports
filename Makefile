@@ -20,14 +20,13 @@
 PORTNAME=	openjfx
 DISTVERSION=	14.0.2.1+1
 CATEGORIES=	java x11-toolkits devel
-PKGNAMESUFFIX=	14
-
 MASTER_SITES=	https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-core/7.7.1/:core \
 		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-grouping/7.7.1/:grouping \
 		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queries/7.7.1/:queries \
 		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-queryparser/7.7.1/:queryparser \
 		https://repo.maven.apache.org/maven2/org/apache/lucene/lucene-sandbox/7.7.1/:sandbox \
 		https://repo1.maven.org/maven2/org/antlr/antlr4/4.7.2/:antlr
+PKGNAMESUFFIX=	14
 DISTFILES=	lucene-core-7.7.1.jar:core \
 		lucene-grouping-7.7.1.jar:grouping \
 		lucene-queries-7.7.1.jar:queries \
@@ -66,9 +65,7 @@ USE_XORG=	x11 xtst xxf86vm
 
 CFLAGS+=	-Wno-unused-command-line-argument
 
-PLIST_SUB=	INSTALLDIR=${INSTALLDIR}
-
-INSTALLDIR=     ${PREFIX}/${PKGBASE}
+PLIST_SUB=	INSTALLDIR=${_INSTALLDIR}
 
 OPTIONS_DEFINE=	MEDIA SWT TEST WEBKIT
 OPTIONS_DEFAULT=	MEDIA WEBKIT
@@ -106,6 +103,8 @@ _GRADLE_ENV=	CC=${WRKDIR}/bin/ccwrapper \
 		GRADLE_USER_HOME=${WRKDIR}/gradle-home \
 		JAVA_VERSION=${JAVA_VERSION}
 _GRADLE_RUN=	${SETENV} ${_GRADLE_ENV} gradle62 --no-daemon
+
+_INSTALLDIR=	${PREFIX}/${PKGBASE}
 
 post-extract:
 	${MKDIR} ${WRKDIR}/jars
